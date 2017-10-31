@@ -39,6 +39,47 @@ Attribute AADT2AAWT.VB_Description = "AADT2AAWT(Newwork, AADT)"
 End Function
 
 Function HGVWeekday(HGV_AADT As Double)
+Attribute HGVWeekday.VB_Description = "Convert AADT HGV% to weekday only HGV%"
+' convert HGV% of AADT to HGV% of weekday only
     HGVWeekday = HGV_AADT * 1.2
 End Function
 
+Function AMPMPeak2AAWT(Network As Integer, AMPeak As Double, PMPeak As Double)
+    Dim SI As Double
+    Dim FGM1, FGM2, FGM3, FGM4, AAHTam, AAHTpm, AAHT, TrafficG1, TrafficG2, TrafficG3, TrafficG4 As Double
+
+    Select Case Network
+        Case 0
+            SI = 1.06
+        Case 1, 2
+            SI = 1#
+        Case 3, 4
+            SI = 1.1
+    End Select
+    FGM1 = 0.446 - 0.159 * SI
+    FGM2 = 1.581 - 0.089 * SI
+    FGM3 = 1.63 + 0.326 * SI
+    FGM4 = 1.371 + 0.981 * SI
+    
+    AAHTam = AMPeak / FGM3
+    AAHTpm = PMPeak / FGM4
+    AAHT = (AAHTam + AAHTpm) / 2#
+    TrafficG1 = AAHT * FGM1 * 6 ' 6 hours in group 1
+    TrafficG2 = AAHT * FGM2 * 8 ' 8 hours in group 2
+    TrafficG3 = AAHT * FGM3 * 2 ' 2 hours in group 3
+    TrafficG4 = AAHT * FGM4 * 2 ' 2 hours in group 4
+    
+    AMPMPeak2AAWT = TrafficG1 + TrafficG2 + TrafficG3 + TrafficG4
+End Function
+
+Function countValueX_Y(values As Range, X As Double, Y As Double)
+    Dim v As Double
+    Dim i As Long
+    i = 0
+    For Each v In values
+        If v.Value > X And v.Value < Y Then
+            i = i + 1
+        End If
+    Next v
+    countValueX_Y = i
+End Function
