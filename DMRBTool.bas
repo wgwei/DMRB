@@ -72,8 +72,8 @@ Function AMPMPeak2AAWT(Network As Integer, AMPeak As Double, PMPeak As Double)
     AMPMPeak2AAWT = TrafficG1 + TrafficG2 + TrafficG3 + TrafficG4
 End Function
 
-Function countValueX_Y(values As Range, X As Double, Y As Double)
-    Dim v As Double
+Function countValueBtwX_Y(values As Range, X As Double, Y As Double)
+    Dim v As Variant
     Dim i As Long
     i = 0
     For Each v In values
@@ -81,5 +81,44 @@ Function countValueX_Y(values As Range, X As Double, Y As Double)
             i = i + 1
         End If
     Next v
-    countValueX_Y = i
+    countValueBtwX_Y = i
+End Function
+Function ShortTermImpact(levelDiff As Double)
+    Dim magnitude As String
+    If levelDiff < 0 Then
+        magnitude = "-"
+    ElseIf levelDiff = 0 Then
+         magnitude = "No change"
+    ElseIf levelDiff >= 0.1 And levelDiff <= 0.9 Then
+        magnitude = "Negligible"
+    ElseIf levelDiff >= 1 And levelDiff <= 2.9 Then
+        magnitude = "Minor"
+    ElseIf levelDiff >= 3 And levelDiff <= 4.9 Then
+        magnitude = "Moderate"
+    Else
+        magnitude = "Major"
+    
+    End If
+    ShortTermImpact = magnitude
+    
+End Function
+
+Function LongTermImpact(levelDiff As Double)
+    Dim magnitude As String
+    If levelDiff < 0 Then
+        magnitude = "-"
+    ElseIf levelDiff = 0 Then
+         magnitude = "No change"
+    ElseIf levelDiff >= 0.1 And levelDiff <= 2.9 Then
+        magnitude = "Negligible"
+    ElseIf levelDiff >= 3 And levelDiff <= 4.9 Then
+        magnitude = "Minor"
+    ElseIf levelDiff >= 5 And levelDiff <= 9.9 Then
+        magnitude = "Moderate"
+    Else
+        magnitude = "Major"
+    
+    End If
+    LongTermImpact = magnitude
+    
 End Function
