@@ -58,12 +58,11 @@ class TrafficFlow(HourlyFlowGroup):
         HGV.__init__(self)
         
         self.Network = Network
-        self.HGVPerc = HGVPerc
+        self.HGVPerc = HGVPerc*self.OGV1
         
         if AADT>0:
             self.AADT = AADT
             self.AAWT = self._AADT_to_AAWT()
-            self.HGVPerc = self._HGV_perc_AMPM()
         if AMPeak>0:
             print("AM peak traffic recognised !")
         if PMPeak>0:
@@ -83,9 +82,7 @@ class TrafficFlow(HourlyFlowGroup):
         AAWT = trafficG1 + trafficG2 + trafficG3 + trafficG4
         return AAWT
     
-    def _HGV_perc_AMPM(self):
-        return self.HGVPerc*self.OGV1
-        
+
     def _AMPMPeak_to_AAWT(self):
         pass
     
@@ -115,20 +112,25 @@ def read_traffic_input(filename="traffic_input.CSV"):
                 roads.append(Roads(tr[0], tr[1], tr[2], tr[3], tr[4], tr[5], tr[6], tr[7]))
     return roads
 
-def process(roads,outputFile="AAWT_output.CSV"):
+def processTraffic(trafficInputFile="traffic_input_DS2030.CSV", outputFile="AAWT_output.CSV", key=1):
+    ''' key = 1 AADT to AAWT
+        key = 2 AM, pM peak to AAWT
+        key = 3 AAHT to AAWT
+    '''
+    roads = read_traffic_input("traffic_input_DS2030.CSV")
     with open(outputFile, "w") as w:
         w.write("RoadName, AADT_24hr, AAWT_18hr, HGV%, Speed km/h\n")
         for rd in roads:
             print("\n", rd.RoadName)
-            tf = TrafficFlow(Network=int(rd.Network), AADT=float(rd.AADT), HGVPerc=float(rd.HGVPerc))
+            if key==1: # AADT to AAWT
+                tf = TrafficFlow(Network=int(rd.Network), AADT=float(rd.AADT), HGVPerc=float(rd.HGVPerc))
             print(int(float(rd.AADT)), int(tf.AAWT), tf.HGVPerc)
             w.write("{},{},{},{}, {}\n".format(rd.RoadName, int(float(rd.AADT)), int(tf.AAWT), tf.HGVPerc, rd.Speed) )
     
     print("\n\ndone !")
         
 def main():
-    roads = read_traffic_input("traffic_input_DS2030.CSV")
-    process(roads, "AAWT_output_DS2030.CSV")
+    processTraffic("traffic_input_DS2030.CSV", "AAWT_output_DS2030.CSV", 1)
 
 if __name__=="__main__":
     main()
