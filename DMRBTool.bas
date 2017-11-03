@@ -89,13 +89,13 @@ Function ShortTermImpact(levelDiff As Double)
         magnitude = "-"
     ElseIf levelDiff = 0 Then
          magnitude = "No change"
-    ElseIf levelDiff >= 0.1 And levelDiff <= 0.9 Then
+    ElseIf levelDiff > 0.09 And levelDiff <= 0.9 Then
         magnitude = "Negligible"
     ElseIf levelDiff >= 1 And levelDiff <= 2.9 Then
         magnitude = "Minor"
     ElseIf levelDiff >= 3 And levelDiff <= 4.9 Then
         magnitude = "Moderate"
-    Else
+    ElseIf levelDiff >= 5 Then
         magnitude = "Major"
     
     End If
@@ -109,16 +109,28 @@ Function LongTermImpact(levelDiff As Double)
         magnitude = "-"
     ElseIf levelDiff = 0 Then
          magnitude = "No change"
-    ElseIf levelDiff >= 0.1 And levelDiff <= 2.9 Then
+    ElseIf levelDiff > 0.09 And levelDiff <= 2.9 Then
         magnitude = "Negligible"
     ElseIf levelDiff >= 3 And levelDiff <= 4.9 Then
         magnitude = "Minor"
     ElseIf levelDiff >= 5 And levelDiff <= 9.9 Then
         magnitude = "Moderate"
-    Else
+    ElseIf levelDiff >= 10 Then
         magnitude = "Major"
     
     End If
     LongTermImpact = magnitude
     
 End Function
+Function NuisanceByL10(LA1018hr As Double)
+    NuisanceByL10 = (100# / (1 + Exp(-(0.12 * LA1018hr - 9.08)))) / 100#
+End Function
+
+Function NuisanceChangeByL10Change(LA10change As Double)
+    If LA10change >= 0 Then
+        NuisanceChangeByL10Change = 21# * (LA10change ^ 0.33) / 100#
+    Else
+        NuisanceChangeByL10Change = -1#
+    End If
+End Function
+
